@@ -9,7 +9,8 @@ def get_logo_upload_path(_, filename):
 
 
 class User(AbstractUser):
-    pass
+    def __str__(self):
+        return self.get_full_name()
 
 
 class Employer(models.Model):
@@ -19,3 +20,6 @@ class Employer(models.Model):
     address = models.CharField(max_length=255)
     logo = models.ImageField(upload_to=get_logo_upload_path, null=True, blank=True)
     description = models.TextField()
+
+    def __str__(self):
+        return self.company_name
