@@ -42,7 +42,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Application
-        fields = ("id", "job", "status", "description", "resume")
+        fields = ("id", "job", "description", "resume", "status_display")
         extra_kwargs = {
             "id": {"read_only": True},
             "status_display": {"read_only": True},

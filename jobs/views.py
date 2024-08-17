@@ -36,7 +36,7 @@ class ApplicationView(GenericAPIView, ListModelMixin, RetrieveModelMixin):
         serializer = ApplicationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        if not Application.objects.filter(job=serializer.validated_data["job"], applicant=request.user).exists():
+        if Application.objects.filter(job=serializer.validated_data["job"], applicant=request.user).exists():
             return Response({"detail": "You have already applied to this job."}, status=400)
 
         if (
