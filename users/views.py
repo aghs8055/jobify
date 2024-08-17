@@ -18,7 +18,7 @@ def login(request):
     user = authenticate(
         request,
         username=login_serializer.validated_data["username"],
-        password=login_serializer.validated_data["password"]
+        password=login_serializer.validated_data["password"],
     )
     if user is None:
         return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
@@ -36,7 +36,7 @@ def login(request):
 @api_view(["POST"])
 def logout(request):
     try:
-        token = RefreshToken(request.data["refresh"])
+        token = RefreshToken(request.data.get("refresh", ""))
         token.blacklist()
     except TokenError:
         return Response({"message": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
@@ -46,13 +46,13 @@ def logout(request):
 @api_view(["POST"])
 def refresh(request):
     try:
-        token = RefreshToken(request.data["refresh"])
-        token = token.refresh()
+        token = RefreshToken(request.data.get("refresh", ""))
+        access_token = str(token.access_token)
     except TokenError:
         return Response({"message": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
     return Response(
         {
-            "access": str(token.access_token),
+            "access": access_token,
         },
         status=status.HTTP_200_OK,
     )
@@ -63,7 +63,7 @@ def register(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

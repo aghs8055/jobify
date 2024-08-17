@@ -16,9 +16,12 @@ class UserSerializer(serializers.ModelSerializer):
             "password",
             "password2",
         )
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
 
-    def validate(data):
-        if data["password"] != data["password2"]:
+    def validate(self, data):
+        if data["password"] != data.pop("password2"):
             raise serializers.ValidationError("Passwords don't match")
         return data
 
