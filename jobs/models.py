@@ -55,6 +55,9 @@ class Job(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.title
+
 
 class Application(models.Model):
     class Status(models.TextChoices):
@@ -64,7 +67,7 @@ class Application(models.Model):
 
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     applicant = models.ForeignKey(User, on_delete=models.CASCADE)
-    status = models.CharField(max_length=2, choices=Status.choices)
+    status = models.CharField(max_length=2, choices=Status.choices, default=Status.PENDING)
     description = models.TextField()
     resume = models.FileField(upload_to=get_resume_upload_path)
     created_at = models.DateTimeField(auto_now_add=True)
