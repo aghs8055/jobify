@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 def get_logo_upload_path(_, filename):
-    return f"resumes/{uuid.uuid4()}.{filename.split('.')[-1]}"
+    return f"logos/{uuid.uuid4()}.{filename.split('.')[-1]}"
 
 
 class User(AbstractUser):
