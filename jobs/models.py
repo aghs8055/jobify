@@ -68,7 +68,7 @@ class Application(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     applicant = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=2, choices=Status.choices, default=Status.PENDING)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     resume = models.FileField(upload_to=get_resume_upload_path)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
