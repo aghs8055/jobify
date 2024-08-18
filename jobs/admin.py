@@ -8,20 +8,8 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ["name"]
 
 
-class OwnerOrSuperuserAdmin(admin.ModelAdmin):
-    def has_change_permission(self, request, obj=None):
-        if obj is not None and not request.user.is_superuser:
-            return obj.employer == request.user.employer
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        if obj is not None and not request.user.is_superuser:
-            return obj.employer == request.user.employer
-        return super().has_delete_permission(request, obj)
-
-
 @admin.register(Job)
-class JobAdmin(OwnerOrSuperuserAdmin):
+class JobAdmin(admin.ModelAdmin):
     fields = [
         "title",
         "description",
@@ -59,10 +47,21 @@ class JobAdmin(OwnerOrSuperuserAdmin):
             return qs
         return qs.filter(employer=request.user.employer)
 
+    def has_change_permission(self, request, obj=None):
+        if obj is not None and not request.user.is_superuser:
+            return obj.employer == request.user.employer
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if obj is not None and not request.user.is_superuser:
+            return obj.employer == request.user.employer
+        return super().has_delete_permission(request, obj)
+
 
 @admin.register(Application)
-class ApplicationAdmin(OwnerOrSuperuserAdmin):
+class ApplicationAdmin(admin.ModelAdmin):
     fields = ["resume", "status", "description"]
+    readonly_fields = ["applicant", "resume"]
     list_display = ["applicant", "job", "status"]
     search_fields = ["job__title", "applicant__email", "applicant__first_name", "applicant__last_name"]
     list_filter = ["status"]
@@ -73,3 +72,8 @@ class ApplicationAdmin(OwnerOrSuperuserAdmin):
         if request.user.is_superuser:
             return qs
         return qs.filter(job__employer=request.user.employer)
+
+    def has_change_permission(self, request, obj=None):
+        if obj is not None and not request.user.is_superuser:
+            return obj.job.employer == request.user.employer
+        return super().has_change_permission(request, obj)
